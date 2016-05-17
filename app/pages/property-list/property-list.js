@@ -15,11 +15,29 @@ export class PropertyListPage {
     constructor(nav, propertyService) {
         this.nav = nav;
         this.propertyService = propertyService;
+        this.searchQuery = '';
+        this.items = [
+          'Amsterdam',
+          'Bogota',
+          'Berlin'
+        ];
     }
 
     ngOnInit() {
         this.propertyService.findAll().then(properties => this.properties = properties);
     }
+
+    getSearchItems() {
+        var q = this.searchQuery;
+        if(q.trim() == '') { return this.items; }
+        return this.items.filter((v) => {
+          if(v.toLowerCase().indexOf(q.toLowerCase()) >= 0) {
+            return true;
+          }
+          return false;
+        })
+      }
+
 
     itemTapped(event, property) {
         this.nav.push(PropertyDetailsPage, {

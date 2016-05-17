@@ -5,7 +5,26 @@
     <ion-title>Properties</ion-title>
 </ion-navbar>
 
+<ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchQuery" (input)="getSearchItems($event)">
+     <ion-list>
+        <ion-item *ngFor="#property of properties">
+            {{property.title}}
+        </ion-item>
+    </ion-list>
+    </ion-searchbar>
+</ion-toolbar>
+
 <ion-content>
+
+    <ion-slides pager loop="true" autoplay="true" index="1">
+        <ion-slide *ngFor="#property of properties">
+            <ion-thumbnail item-center>
+                <img src="{{property.thumbnail}}"/>
+            </ion-thumbnail>
+        </ion-slide>
+    </ion-slides>
+
     <ion-list>
         <button ion-item *ngFor="#property of properties" (click)="itemTapped($event, property)">
             <ion-thumbnail item-left>
