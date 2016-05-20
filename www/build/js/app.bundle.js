@@ -3187,9 +3187,11 @@
 
 	var _propertyList = __webpack_require__(359);
 
-	var _brokerList = __webpack_require__(365);
+	var _brokerList = __webpack_require__(366);
 
-	var _favoriteList = __webpack_require__(366);
+	var _favoriteList = __webpack_require__(367);
+
+	var _searchList = __webpack_require__(365);
 
 	var _propertyService = __webpack_require__(364);
 
@@ -3221,7 +3223,7 @@
 	        this.app = app;
 	        this.platform = platform;
 
-	        this.pages = [{ title: 'Welcome', component: _welcome.WelcomePage, icon: "bookmark" }, { title: 'Properties', component: _propertyList.PropertyListPage, icon: "home" }, { title: 'Brokers', component: _brokerList.BrokerListPage, icon: "people" }, { title: 'Favorites', component: _favoriteList.FavoriteListPage, icon: "star" }];
+	        this.pages = [{ title: 'Welcome', component: _welcome.WelcomePage, icon: "bookmark" }, { title: 'Properties', component: _propertyList.PropertyListPage, icon: "home" }, { title: 'Brokers', component: _brokerList.BrokerListPage, icon: "people" }, { title: 'Favorites', component: _favoriteList.FavoriteListPage, icon: "star" }, { title: 'Search', component: _searchList.SearchListPage, icon: "star" }];
 
 	        this.rootPage = _welcome.WelcomePage;
 	        this.initializeApp();
@@ -62214,6 +62216,8 @@
 
 	var _propertyService = __webpack_require__(364);
 
+	var _searchList = __webpack_require__(365);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var PropertyListPage = exports.PropertyListPage = (_dec = (0, _ionic.Page)({
@@ -62231,6 +62235,9 @@
 
 	        this.nav = nav;
 	        this.propertyService = propertyService;
+	        this.searchQuery = '';
+	        this.items = ['Amsterdam', 'Bogota', 'Berlin'];
+	        this.trueProps = [];
 	    }
 
 	    _createClass(PropertyListPage, [{
@@ -62241,6 +62248,23 @@
 	            this.propertyService.findAll().then(function (properties) {
 	                return _this.properties = properties;
 	            });
+	            this.propertyService.findAll().then(function (properties) {
+	                return _this.trueProps = properties;
+	            });
+	        }
+	    }, {
+	        key: 'getSearchItems',
+	        value: function getSearchItems(event, propList) {
+	            if (event.value != undefined) {
+	                var filteredList = [];
+	                var searchText = event.value.toLowerCase();
+	                console.log(searchText);
+	                filteredList = this.trueProps.filter(function (prop) {
+	                    var title = prop.title.toLowerCase();
+	                    return prop.title.toLowerCase().startsWith(searchText);
+	                });
+	                this.properties = filteredList;
+	            }
 	        }
 	    }, {
 	        key: 'itemTapped',
@@ -62248,6 +62272,11 @@
 	            this.nav.push(_propertyDetails.PropertyDetailsPage, {
 	                property: property
 	            });
+	        }
+	    }, {
+	        key: 'openSearchPage',
+	        value: function openSearchPage() {
+	            this.nav.push(_searchList.SearchListPage);
 	        }
 	    }]);
 
@@ -62505,7 +62534,7 @@
 	});
 	var // The login URL for the OAuth process
 	// To override default, pass loginURL in init(props)
-	loginURL = 'https://login.salesforce.com',
+	loginURL = 'https://devloperblog-dev-ed.my.salesforce.com',
 
 
 	// The Connected App client Id. Default app id provided - Not for production use.
@@ -63147,6 +63176,92 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.SearchListPage = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _dec, _class;
+
+	var _core = __webpack_require__(7);
+
+	var _ionic = __webpack_require__(5);
+
+	var _propertyDetails = __webpack_require__(360);
+
+	var _propertyService = __webpack_require__(364);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	//import {bootstrap} from 'angular2/bootstrap'
+	var SearchListPage = exports.SearchListPage = (_dec = (0, _ionic.Page)({
+	    selector: 'search',
+	    templateUrl: 'build/pages/search-list/search-list.html'
+	}), _dec(_class = function () {
+	    _createClass(SearchListPage, null, [{
+	        key: 'parameters',
+	        get: function get() {
+	            return [[_ionic.NavController], [_propertyService.PropertyService]];
+	        }
+	    }]);
+
+	    function SearchListPage(nav, propertyService) {
+	        _classCallCheck(this, SearchListPage);
+
+	        this.nav = nav;
+	        this.propertyService = propertyService;
+	        this.searchQuery = '';
+	        this.items = ['Amsterdam', 'Bogota', 'Berlin'];
+	        this.trueProps = [];
+	    }
+
+	    _createClass(SearchListPage, [{
+	        key: 'ngOnInit',
+	        value: function ngOnInit() {
+	            var _this = this;
+
+	            this.propertyService.findAll().then(function (properties) {
+	                return _this.properties = properties;
+	            });
+	            this.propertyService.findAll().then(function (properties) {
+	                return _this.trueProps = properties;
+	            });
+	        }
+	    }, {
+	        key: 'getSearchItems',
+	        value: function getSearchItems(event, propList) {
+	            if (event.value != undefined) {
+	                var filteredList = [];
+	                var searchText = event.value.toLowerCase();
+	                console.log(searchText);
+	                filteredList = this.trueProps.filter(function (prop) {
+	                    var title = prop.title.toLowerCase();
+	                    return prop.title.toLowerCase().startsWith(searchText);
+	                });
+	                this.properties = filteredList;
+	            }
+	        }
+	    }, {
+	        key: 'itemTapped',
+	        value: function itemTapped(event, property) {
+	            this.nav.push(_propertyDetails.PropertyDetailsPage, {
+	                property: property
+	            });
+	        }
+	    }]);
+
+	    return SearchListPage;
+	}()) || _class);
+	//bootstrap(SearchComponent);
+
+/***/ },
+/* 366 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	exports.BrokerListPage = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -63202,7 +63317,7 @@
 	}()) || _class);
 
 /***/ },
-/* 366 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

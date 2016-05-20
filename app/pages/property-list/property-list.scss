@@ -1,0 +1,16 @@
+.search{
+	position: relative;
+}
+.search ion-list{
+	width: 66.66%;
+	position: absolute;
+	overflow: hidden
+	height: 0px;
+
+	transition: height 1s ease;
+	left: 0;
+	top: 100%
+
+	background: red;
+
+}

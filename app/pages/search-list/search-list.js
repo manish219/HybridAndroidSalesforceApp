@@ -2,42 +2,55 @@ import {OnInit} from 'angular2/core';
 import {Page, NavController} from 'ionic-framework/ionic';
 import {PropertyDetailsPage} from '../property-details/property-details';
 import {PropertyService} from '../../services/property-service';
-
+import {Component} from 'angular2/core'
+//import {bootstrap} from 'angular2/bootstrap'
 @Page({
     selector : 'search',
     templateUrl: 'build/pages/search-list/search-list.html'
 })
-export class SearchListPage {
-  constructor() {
-    this.searchQuery = '';
-    this.initializeItems();
-  }
 
-  initializeItems() {
-    this.items = [
-      'Amsterdam',
-      'Bogota',
-      'Bombay'
-    ];
-  }
-
-  getItems(searchbar) {
-    // Reset items back to all of the items
-    this.initializeItems();
-
-    // set q to the value of the searchbar
-    var q = searchbar.value;
-
-    // if the value is an empty string don't filter the items
-    if (q.trim() == '') {
-      return;
+export class SearchListPage{
+static get parameters() {
+        return [[NavController], [PropertyService]];
     }
 
-    this.items = this.items.filter((v) => {
-      if (v.toLowerCase().indexOf(q.toLowerCase()) > -1) {
-        return true;
-      }
-      return false;
-    })
-  }
-} 
+    constructor(nav, propertyService) {
+        this.nav = nav;
+        this.propertyService = propertyService;
+        this.searchQuery = '';
+        this.items = [
+          'Amsterdam',
+          'Bogota',
+          'Berlin'
+        ];
+        this.trueProps = [];
+    }
+
+    ngOnInit() {
+        this.propertyService.findAll().then(properties => this.properties = properties);
+        this.propertyService.findAll().then(properties => this.trueProps = properties);
+    }
+
+
+    getSearchItems(event, propList) {
+        if(event.value!=undefined){          
+            var filteredList = [];
+            var searchText = event.value.toLowerCase();
+            console.log(searchText);
+            filteredList = this.trueProps.filter(
+                function(prop){
+                    var title = prop.title.toLowerCase();
+                    return prop.title.toLowerCase().startsWith(searchText);
+                });
+            this.properties = filteredList;
+        }
+
+    }
+
+    itemTapped(event, property) {
+        this.nav.push(PropertyDetailsPage, {
+            property: property
+        });
+    }
+}
+//bootstrap(SearchComponent);

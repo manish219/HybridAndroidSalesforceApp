@@ -2,7 +2,6 @@ import {OnInit} from 'angular2/core';
 import {Page, NavController} from 'ionic-framework/ionic';
 import {PropertyDetailsPage} from '../property-details/property-details';
 import {PropertyService} from '../../services/property-service';
-import {SearchListPage} from '../search-list/search-list';
 
 @Page({
     templateUrl: 'build/pages/property-list/property-list.html'
@@ -22,38 +21,32 @@ export class PropertyListPage {
           'Bogota',
           'Berlin'
         ];
-        this.trueProps = [];
     }
 
     ngOnInit() {
         this.propertyService.findAll().then(properties => this.properties = properties);
-        this.propertyService.findAll().then(properties => this.trueProps = properties);
     }
 
+    getSearchItems(event) {
+      console.log('test');
+      alert('getSearchItems');
+        var q = event.value;
+        if(q.trim() == '') { return this.items; }
+        return this.items.filter((v) => {
+          if(v.toLowerCase().indexOf(q.toLowerCase()) >= 0) {
+            return true;
+          }
+          return false;
+        })
+      }
 
-    getSearchItems(event, propList) {
-        if(event.value!=undefined){          
-            var filteredList = [];
-            var searchText = event.value.toLowerCase();
-            console.log(searchText);
-            filteredList = this.trueProps.filter(
-                function(prop){
-                    var title = prop.title.toLowerCase();
-                    return prop.title.toLowerCase().startsWith(searchText);
-                });
-            this.properties = filteredList;
-        }
-
-    }
 
     itemTapped(event, property) {
+      console.log('test2');
+      alert('test');
         this.nav.push(PropertyDetailsPage, {
             property: property
         });
     }
 
-    openSearchPage(){
-        this.nav.push(SearchListPage);
-    }
 }
-
